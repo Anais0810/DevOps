@@ -1,0 +1,59 @@
+version: "3.7"
+
+services:
+  backend:
+    image: anaisdelcamp/tp1-backapistudent:1.0
+    # build:
+    #   context: ./backend/simple-api-student-main
+    environment:
+      - POSTGRES_USR=usr
+      - POSTGRES_DB=db
+      - POSTGRES_URL=database:5432
+      - POSTGRES_PASSWORD=pwd
+    networks:
+      - app-network
+    depends_on:
+      - database
+    container_name: backendapistudent
+
+  database:
+    image: anaisdelcamp/tp1-database:1.0
+    # build:
+    #   context: ./database
+    environment:
+      - POSTGRES_USR=usr
+      - POSTGRES_DB=db
+      - POSTGRES_PASSWORD=pwd
+    port:
+      - "8888:5432"
+    networks:
+      - app-network
+    volumes:
+      - dataDir:/var/lib/postgresql/data
+    container_name: database
+
+  httpd:
+    image: anaisdelcamp/tp1-httpserver:1.0
+    # build:
+    #   context: ./httpd/website
+    ports:
+      - "5050:80"
+    networks:
+      - app-network
+    depends_on:
+      - backend
+    container_name: httpserver
+
+  adminer:
+    image: adminer
+    restart: always
+    networks:
+      - app-network
+    ports:
+      - 8090:8080
+
+networks:
+  app-network:
+
+volumes:
+  dataDir:
