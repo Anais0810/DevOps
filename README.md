@@ -215,7 +215,66 @@ playbook :
   service: name=docker state=started
   tags: docker
 ```
-
-
-
-
+### 3-3 Document your docker_container tasks configuration.
+Dans app:
+```yml
+- name: Run app
+  docker_container:
+    name: backendapistudent
+    image: anaisdelcamp/tp1-backapistudent:1.0
+    env:
+      POSTGRES_USR: "{{POSTGRES_USR}}"
+      POSTGRES_DB: "{{POSTGRES_DB}}"
+      POSTGRES_URL: "{{POSTGRES_URL}}"
+      POSTGRES_PASSWORD: "{{POSTGRES_PASSWORD}}"
+    networks:
+      - name: app-network
+```
+Dans database
+```yml
+- name: Run Database
+  docker_container:
+    name: database
+    image: anaisdelcamp/tp1-database:1.0
+    env:
+      POSTGRES_USR: "{{POSTGRES_USR}}"
+      POSTGRES_DB: "{{POSTGRES_DB}}"
+      POSTGRES_PASSWORD: "{{POSTGRES_PASSWORD}}"
+    ports:
+      - "8090:5432"
+    volumes:
+      - /data
+    networks:
+      - name: app-network
+```
+Dans network
+```yml
+- name: Create a network
+  docker_network:
+    name: app-network
+```
+Dans proxy
+```yml
+- name: Run HTTPD
+  docker_container:
+    name: httpserver
+    image: anaisdelcamp/tp1-httpserver:1.0
+    ports:
+      - "80:80"
+    networks:
+      - name: app-network
+```
+Dans inventories/settings.yml
+```yml
+all:
+ vars:
+   ansible_user: centos
+   ansible_ssh_private_key_file: /home/anais/cpe/devops/tp3/key/id_rsa
+   POSTGRES_USR: "usr"
+   POSTGRES_DB: "db"
+   POSTGRES_PASSWORD: "pwd"
+   POSTGRES_URL: "database:5432"
+ children:
+   prod:
+     hosts: centos@anais.delcamp.takima.cloud
+```
