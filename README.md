@@ -147,3 +147,75 @@ docker push anaisdelcamp/tp1-backapistudent:1.0
 docker push anaisdelcamp/tp1-httpserver:1.0
 ```
 Ces commandes push suer le site de docker les images précédament enregistrer
+
+# TP3 Ansible
+### 3-1 Document your inventory and base commands
+```yml
+all:
+ vars:
+   ansible_user: centos # le user
+   ansible_ssh_private_key_file: /home/anais/cpe/devops/tp3/key/id_rsa # le chemain vers la clé rsa
+ children:
+   prod:
+     hosts: centos@anais.delcamp.takima.cloud #le host
+```
+```bash
+ansible all -i inventories/setup.yml -m setup -a "filter=ansible_distribution*"
+```
+
+```bash
+ansible all -m service -a "name=httpd state=started" --private-key=<path_to_your_ssh_key> -u centos --become
+```
+### 3-2 Document your playbook
+playbook :
+```yml
+- hosts: all
+  gather_facts: false
+  become: true
+
+  roles: docker
+    
+```
+/roles/docker/tasks/main.yml
+```yml
+- name: Test connection
+  ping:
+- name: Install device-mapper-persistent-data
+  yum:
+    name: device-mapper-persistent-data
+    state: latest
+
+- name: Install lvm2
+  yum:
+    name: lvm2
+    state: latest
+
+- name: add repo docker
+  command:
+    cmd: sudo yum-config-manager --add-repo=https://download.docker.com/linux/centos/docker-ce.repo
+
+- name: Install Docker
+  yum:
+    name: docker-ce
+    state: present
+
+- name: Install python3
+  yum:
+    name: python3
+    state: present
+
+- name: Install docker with Python 3
+  pip:
+    name: docker
+    executable: pip3
+  vars:
+    ansible_python_interpreter: /usr/bin/python3
+
+- name: Make sure Docker is running
+  service: name=docker state=started
+  tags: docker
+```
+
+
+
+
