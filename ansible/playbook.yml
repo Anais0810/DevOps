@@ -10,5 +10,5 @@
     - app
     - proxy
   vars: 
-    ansible_user: "{{ansible_user}}"
+    ansible_user: "{{ANSIBLE_USER}}"
     
