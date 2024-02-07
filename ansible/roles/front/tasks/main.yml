@@ -1,0 +1,6 @@
+- name: Run Front
+  docker_container:
+    name: front
+    image: anaisdelcamp/tp3-front:1.2
+    networks:
+      - name: app-network

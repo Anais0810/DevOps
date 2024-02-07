@@ -1,0 +1,13 @@
+- name: Run HTTPD
+  docker_container:
+    name: httpserver
+    image: anaisdelcamp/tp1-httpserver:1.6
+    ports:
+      - "80:80"
+    networks:
+      - name: app-network
+    state: started 
+    recreate: true
+    pull: true
+  vars:
+    ansible_python_interpreter: /usr/bin/python

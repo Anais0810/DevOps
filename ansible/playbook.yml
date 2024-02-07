@@ -1,0 +1,14 @@
+- hosts: all
+  gather_facts: false
+  become: true
+
+  roles: 
+    - docker
+    - network
+    - front
+    - database
+    - app
+    - proxy
+  vars: 
+    ansible_user: "{{ansible_user}}"
+    

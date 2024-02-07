@@ -1,0 +1,14 @@
+- name: Run Database
+  docker_container:
+    name: database
+    image: anaisdelcamp/tp1-database:1.0
+    env:
+      POSTGRES_USR: "{{POSTGRES_USR}}"
+      POSTGRES_DB: "{{POSTGRES_DB}}"
+      POSTGRES_PASSWORD: "{{POSTGRES_PASSWORD}}"
+    ports:
+      - "8090:5432"
+    volumes:
+      - /data
+    networks:
+      - name: app-network

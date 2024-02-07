@@ -1,0 +1,11 @@
+- name: Run app
+  docker_container:
+    name: backendapistudent
+    image: anaisdelcamp/tp1-backapistudent:1.0
+    env:
+      POSTGRES_USR: "{{POSTGRES_USR}}"
+      POSTGRES_DB: "{{POSTGRES_DB}}"
+      POSTGRES_URL: "{{POSTGRES_URL}}"
+      POSTGRES_PASSWORD: "{{POSTGRES_PASSWORD}}"
+    networks:
+      - name: app-network

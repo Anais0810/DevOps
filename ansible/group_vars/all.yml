@@ -1,0 +1,5 @@
+ansible_user: centos
+POSTGRES_USR: "usr"
+POSTGRES_DB: "db"
+POSTGRES_PASSWORD: "pwd"
+POSTGRES_URL: "database:5432"

@@ -1,0 +1,28 @@
+name: deploy
+on:
+  workflow_run:
+    workflows: ["build-and-push-docker-image"]
+    types:
+      - completed
+    branches: 
+      - main
+
+jobs:
+  # define job to build and publish docker image
+  deploy:
+    # run only when code is compiling and tests are passing
+    runs-on: ubuntu-22.04
+    if: ${{ github.event.workflow_run.conclusion == 'success' }}
+    # steps to perform in job
+    steps:
+      - name: Run playbook
+        uses: dawidd6/action-ansible-playbook@v2
+        with:
+          # Required, playbook filepath
+          playbook: ansible/deploy.yml
+          # Optional, SSH private key
+          key: ${{secrets.SSH_PRIVATE_KEY}}
+          # Optional, literal inventory file contents
+          inventory: |
+            [all]
+            http://anais.delcamp.takima.cloud/
