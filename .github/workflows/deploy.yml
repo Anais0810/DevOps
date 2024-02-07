@@ -19,10 +19,10 @@ jobs:
         uses: dawidd6/action-ansible-playbook@v2
         with:
           # Required, playbook filepath
-          playbook: ansible/deploy.yml
+          playbook: DevOps/ansible/playbook.yml
           # Optional, SSH private key
           key: ${{secrets.SSH_PRIVATE_KEY}}
           # Optional, literal inventory file contents
           inventory: |
             [all]
-            http://anais.delcamp.takima.cloud/
+            anais.delcamp.takima.cloud
