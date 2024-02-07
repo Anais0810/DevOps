@@ -1,4 +1,4 @@
-ansible_user: centos
+ANSIBLE_USER: "centos"
 POSTGRES_USR: "usr"
 POSTGRES_DB: "db"
 POSTGRES_PASSWORD: "pwd"
