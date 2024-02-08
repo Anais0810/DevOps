@@ -17,9 +17,9 @@ COPY 02-InsertData.sql /docker-entrypoint-initdb.d #copier les scripted dans le 
 ```
 Avec la commande : 
 ```
-docker build -t nathanglmt/myfirstpostgres .
+docker build -t anaisdelcamp/database .
 ```
-Pour lancer un container de la base de données (nathanglmt/myfirstpostgres) j'utilise la commande suivante : 
+Pour lancer un container de la base de données (anaisdelcamp/database) j'utilise la commande suivante : 
 ``` bash
 docker run \ 
 -p 8888:5432 \ #définir les pors
@@ -147,6 +147,49 @@ docker push anaisdelcamp/tp1-backapistudent:1.0
 docker push anaisdelcamp/tp1-httpserver:1.0
 ```
 Ces commandes push suer le site de docker les images précédament enregistrer
+
+# TP2 GitHub
+### 2-1 What are testcontainers?
+Testcontainers est un framework opensource permettant de fournir des instances légères et jetables de bases de données courantes.
+### 2-2 Document your Github Actions configurations.
+```yml
+name: test-backend #nom de la pipline
+on:
+  push:
+    branches: 
+      - "**" #les branches sur lesquels la pipline sera lancer
+
+jobs:
+  test-backend: 
+    runs-on: ubuntu-22.04
+    steps: # la liste des étapes
+      - name: Checkout code
+        uses: actions/checkout@v2.5.0 # récupère le code source
+
+      - name: Set up JDK 17 # mise a jour de java en version 17
+        uses: actions/setup-java@v3
+        with:
+          java-version: '17'
+          distribution: 'adopt'
+          
+      - name: Build and test with Maven # lancement des test avec maven
+        run: mvn -B verify sonar:sonar -Dsonar.projectKey=Anais0810_DevOps -Dsonar.organization=anais0810 -Dsonar.host.url=https://sonarcloud.io -Dsonar.login=${{ secrets.SONAR_TOKEN }}  --file ./tp1/backend/simple-api-student-main/
+
+
+```
+### Document your quality gate configuration.
+```bash
+mvn -B verify sonar:sonar -Dsonar.projectKey=Anais0810_DevOps -Dsonar.organization=anais0810 -Dsonar.host.url=https://sonarcloud.io -Dsonar.login=${{ secrets.SONAR_TOKEN }}  --file ./tp1/backend/simple-api-student-main/
+```
+ - -B : execute maven en mode non interactif
+ - verify sonar:sonar : vérifie et  lance l'analyse de code source avec SonarCloud
+ - -Dsonar.projectKey=Anais0810_DevOps : spécifie clé du projet
+ - -Dsonar.organization=anais0810 : spécifie l'organisation
+ - -Dsonar.host.url=https://sonarcloud.io : spécifie l'URL de l'instance de SonarCloud où le projet doit être analysé
+ - -Dsonar.login=${{ secrets.SONAR_TOKEN }} : spécifie le jeton d'authentification pour se connecter à SonarCloud  stockée dans les secrets GitHub
+ - --file ./tp1/backend/simple-api-student-main/ : chemin vers le fichier pom.xml du projet
+
+
 
 # TP3 Ansible
 ### 3-1 Document your inventory and base commands
